@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+
+require 'thor'
+require File.dirname(__FILE__)+"/../lib/find_communities"
+
+class CommunityMain < Thor
+  method_option :level, :aliases => "-l", :desc => "displays the graph of level k rather than the hierachical structure.  if k=-1 then displays the hierarchical structure rather than the graph at a given level"
+  method_option :verbose, :aliases => "-v", :desc => "verbose mode: gives computation time, information about the hierarchy and modularity."
+
+  desc "community", "Decompose graph into communities"
+  argument :filename
+  def community
+    t0 = Time.now
+    verbose = options[:verbose]
+    puts "Begin: #{t0}" if verbose
+    precision = 0.000001
+    c = FindCommunities::Community.new(filename, -1, precision)
+    display_level = options[:level].to_i
+    level = 0
+    g = nil
+    improvement = true
+    mod = c.modularity
+
+    while improvement do
+      if verbose
+        puts "level #{level}:"
+        puts "  start computation #{Time.now}"
+        puts "  network size: #{c.g.nb_nodes} nodes, #{c.g.nb_links} links, #{c.g.total_weight} weight."
+      end
+      improvement = c.one_level
+      new_mod = c.modularity
+      level += 1
+      g.display if level == display_level && g
+      c.display_partition if display_level == -1
+      g = c.partition2graph_binary
+      c = FindCommunities::Community.new(g, -1, precision)
+
+      if verbose
+        puts "  modularity increased from #{"%.6f" % mod} to #{"%.6f" % new_mod}"
+        puts "  end computation #{Time.now}"
+      end
+      mod = new_mod
+      improvement = true if level == 1
+    end
+
+    if verbose
+      puts "End: #{Time.now}"
+      puts "Total duration: #{Time.now - t0} sec."
+    end
+    puts "%.6f" % new_mod
+  end
+
+  default_task :community
+end
+
+CommunityMain.start
