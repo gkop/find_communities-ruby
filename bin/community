@@ -1,15 +1,18 @@
 #!/usr/bin/env ruby
 
 require 'thor'
+require 'pry'
+require 'pry-nav'
 require File.dirname(__FILE__)+"/../lib/find_communities"
 
-class CommunityMain < Thor
-  method_option :level, :aliases => "-l", :desc => "displays the graph of level k rather than the hierachical structure.  if k=-1 then displays the hierarchical structure rather than the graph at a given level"
-  method_option :verbose, :aliases => "-v", :desc => "verbose mode: gives computation time, information about the hierarchy and modularity."
+class CommunityMain < Thor::Group
 
-  desc "community", "Decompose graph into communities"
+  class_option :level, :default => -1, :aliases => "-l", :desc => "displays the graph of level k rather than the hierachical structure.  if k=-1 then displays the hierarchical structure rather than the graph at a given level"
+  class_option :verbose, :type => :boolean, :aliases => "-v", :desc => "verbose mode: gives computation time, information about the hierarchy and modularity."
+
+  desc "Decompose graph into communities"
   argument :filename
-  def community
+  def act
     t0 = Time.now
     verbose = options[:verbose]
     puts "Begin: #{t0}" if verbose
@@ -25,7 +28,7 @@ class CommunityMain < Thor
       if verbose
         puts "level #{level}:"
         puts "  start computation #{Time.now}"
-        puts "  network size: #{c.g.nb_nodes} nodes, #{c.g.nb_links} links, #{c.g.total_weight} weight."
+        puts "  network size: #{c.g.nb_nodes} nodes, #{c.g.nb_links} links, #{c.g.total_weight.to_i} weight."
       end
       improvement = c.one_level
       new_mod = c.modularity
@@ -50,7 +53,10 @@ class CommunityMain < Thor
     puts "%.6f" % new_mod
   end
 
-  default_task :community
+private
+  def self.banner
+    "community FILENAME"
+  end
 end
 
 CommunityMain.start
