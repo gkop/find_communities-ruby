@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'thor'
-require 'pry'
-require 'pry-nav'
 require File.dirname(__FILE__)+"/../lib/find_communities"
 
 class CommunityMain < Thor::Group
