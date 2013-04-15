@@ -21,6 +21,21 @@ module FindCommunities
       }
     end
 
+    def display_graph
+      nb_nodes.times do |node|
+        p = neighbors(node)
+        print "#{node}:"
+        nb_neighbors(node).times do |i|
+          if weights.any?
+            print " (#{p.first[i]} #{p.last[i].to_i})"
+          else
+            print " #{p.first[i]}"
+          end
+        end
+        print "\n"
+      end
+    end
+
     def nb_neighbors(node)
       check_node(node)
       node == 0 ? degrees[0] : degrees[node] - degrees[node-1]

@@ -30,7 +30,7 @@ class CommunityMain < Thor
       improvement = c.one_level
       new_mod = c.modularity
       level += 1
-      g.display if level == display_level && g
+      g.display_graph if level == display_level && g
       c.display_partition if display_level == -1
       g = c.partition2graph_binary
       c = FindCommunities::Community.new(g, -1, precision)
