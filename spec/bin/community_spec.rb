@@ -26,11 +26,11 @@ describe "community (executable)" do
       run "community #{filename} -v"
       output = out
       3.times do |i|
-        output.should match /^level #{i}:\n  start computation [0-9\-: ]+\n  network size: \d+ nodes, \d+ links, \d+ weight.$(\n\d+ \d+){4,}\n  modularity increased from (-)?\d+\.\d+ to \d+\.\d+\n  end computation [0-9\-: ]+$/
+        output.should match /^level #{i}:\n  start computation [0-9\-: +]+\n  network size: \d+ nodes, \d+ links, \d+ weight.$(\n\d+ \d+){4,}\n  modularity increased from (-)?\d+\.\d+ to \d+\.\d+\n  end computation [0-9\-: +]+$/
       end
       lines = output.split("\n")
-      lines.first.should match /^Begin: [0-9\-: ]+$/
-      lines[lines.length-3].should match /^End: [0-9\-: ]+$/
+      lines.first.should match /^Begin: [0-9\-: +]+$/
+      lines[lines.length-3].should match /^End: [0-9\-: +]+$/
       lines[lines.length-2].should match /^Total duration: \d+\.\d+ sec\.$/
       lines.last.to_f.round(2).should == 0.43
     end
