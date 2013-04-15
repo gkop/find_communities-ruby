@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe "community (executable)" do
   let(:filename) { File.dirname(__FILE__) + "/../data/karate.bin" }
+  let(:weights_file) { File.dirname(__FILE__) + "/../data/karate.weights" }
 
   context "outputs a hierarchy", :retry => 2 do
     it "works when no level given" do
@@ -36,7 +37,7 @@ describe "community (executable)" do
     end
   end
 
-  it "outputs level 2 in the hierchy", :retry => 2 do
+  it "outputs level 2 in the hierarchy", :retry => 2 do
     run "community -l 2 #{filename}"
     lines = out.split("\n")
     lines.length.should > 5
@@ -46,7 +47,7 @@ describe "community (executable)" do
     lines.last.to_f.round(2).should == 0.43
   end
 
-  it "outputs level 3 in the hierchy", :retry => 2 do
+  it "outputs level 3 in the hierarchy", :retry => 2 do
     run "community #{filename} -l 3"
     lines = out.split("\n")
     lines.length.should == 5
@@ -54,5 +55,36 @@ describe "community (executable)" do
       l.should match /\A#{i}:( \(\d+ \d+\)){2,}\z/
     end
     lines.last.to_f.round(2).should == 0.43
+  end
+
+  context "with a weights file", :retry => 2 do
+    it "works when no level given" do
+      run "community #{filename} -w #{weights_file}"
+      relevant_lines = out.split("\n").last(4)
+      3.times do |i|
+        relevant_lines[i].should == "#{i} #{i}"
+      end
+      relevant_lines[3].to_f.round(2).should == 0.41
+    end
+
+    it "outputs level 2 in the hierarchy", :retry => 2 do
+      run "community -l 2 #{filename} -w #{weights_file}"
+      lines = out.split("\n")
+      lines.length.should > 5
+      lines[0..lines.length-2].each_with_index do |l, i|
+        l.should match /\A#{i}:( \(\d+ \d+\)){3,}\z/
+      end
+      lines.last.to_f.round(2).should == 0.41
+    end
+
+    it "outputs level 3 in the hierarchy", :retry => 2 do
+      run "community #{filename} -l 3 -w #{weights_file}"
+      lines = out.split("\n")
+      lines.length.should == 5
+      lines[0..lines.length-2].each_with_index do |l, i|
+        l.should match /\A#{i}:( \(\d+ \d+\)){2,}\z/
+      end
+      lines.last.to_f.round(2).should == 0.41
+    end
   end
 end

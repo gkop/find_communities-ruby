@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require 'pry'
 
 require 'thor'
 require File.dirname(__FILE__)+"/../lib/find_communities"
@@ -7,6 +8,7 @@ class CommunityMain < Thor::Group
 
   class_option :level, :default => -1, :aliases => "-l", :desc => "displays the graph of level k rather than the hierachical structure.  if k=-1 then displays the hierarchical structure rather than the graph at a given level"
   class_option :verbose, :type => :boolean, :aliases => "-v", :desc => "verbose mode: gives computation time, information about the hierarchy and modularity."
+  class_option :weights, :aliases => "-w", :desc => "file read the graph as a weighted one (weights are set to 1 otherwise)."
 
   desc "Decompose graph into communities"
   argument :filename
@@ -15,7 +17,7 @@ class CommunityMain < Thor::Group
     verbose = options[:verbose]
     puts "Begin: #{t0}" if verbose
     precision = 0.000001
-    c = FindCommunities::Community.new(filename, -1, precision)
+    c = FindCommunities::Community.new(filename, options[:weights], -1, precision)
     display_level = options[:level].to_i
     level = 0
     g = nil
@@ -34,7 +36,7 @@ class CommunityMain < Thor::Group
       g.display_graph if level == display_level && g
       c.display_partition if display_level == -1
       g = c.partition2graph_binary
-      c = FindCommunities::Community.new(g, -1, precision)
+      c = FindCommunities::Community.new(g, nil, -1, precision)
 
       if verbose
         puts "  modularity increased from #{"%.6f" % mod} to #{"%.6f" % new_mod}"

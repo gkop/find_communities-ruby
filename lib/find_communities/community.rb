@@ -15,8 +15,8 @@ module FindCommunities
     # if 0. even a minor increase is enough to go for one more pass
     attr_accessor :min_modularity
 
-    def initialize(source, nbp=nil, minm=nil)
-      @g = source.is_a?(BinaryGraph) ? source : BinaryGraph.new(source)
+    def initialize(source, weights_file=nil, nbp=nil, minm=nil)
+      @g = source.is_a?(BinaryGraph) ? source : BinaryGraph.new(source, weights_file)
       @size = g.nb_nodes
       @neigh_last = 0
 

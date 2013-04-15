@@ -3,7 +3,7 @@ module FindCommunities
     attr_accessor :degrees, :nb_nodes, :nb_links, :total_weight
     attr_reader :links, :weights
 
-    def initialize(filename=nil, type=nil)
+    def initialize(filename=nil, weights_file=nil)
       if filename
         @record = BinaryGraphRecord.read(open(filename, "rb"))
         @nb_nodes = @record["nb_nodes"]
@@ -15,7 +15,13 @@ module FindCommunities
         @nb_links = 0
         @links = []
       end
-      @weights = []
+      if filename && weights_file
+        weights_record = WeightsRecord.new(:nb_links => nb_links)
+                                      .read(open(weights_file, "rb"))
+        @weights = weights_record["weights"]
+      else
+        @weights = []
+      end
       @total_weight = nb_nodes.times.inject(0.0) {|sum, node|
         sum + weighted_degree(node)
       }
