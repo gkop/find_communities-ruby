@@ -14,8 +14,8 @@ class ConvertMain < Thor::Group
   def act
     type = (options[:weights] ? :weighted : :unweighted)
     g = FindCommunities::Graph.new(options[:input], type)
-    g.clean(type)
-    g.display_binary(options[:output], options[:weights], type)
+    g.clean
+    g.display_binary(options[:output], options[:weights])
   end
 
 end

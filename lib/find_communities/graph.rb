@@ -1,10 +1,11 @@
 module FindCommunities
   class Graph
-    attr_reader :links
+    attr_reader :links, :type
 
-    def initialize(filename, type=nil)
+    def initialize(filename, type=:unweighted)
       weight = 1.0
       @links = []
+      @type = type
 
       File.open(filename, "r") do |file|
         file.each_line do |line|
@@ -22,7 +23,7 @@ module FindCommunities
       end
     end
 
-    def clean(type)
+    def clean
       links.length.times do |i|
         m = {}
 
@@ -44,7 +45,12 @@ module FindCommunities
       end
     end
 
-    def display_binary(filename, weights_file, type)
+    def to_binary_graph
+      display_binary(nil, nil) unless @record
+      BinaryGraph.new(@record, @weights_record)
+    end
+
+    def display_binary(filename, weights_file)
       r = BinaryGraphRecord.new
       r["nb_nodes"] = links.size
       tot = 0
@@ -60,20 +66,31 @@ module FindCommunities
           link_index += 1
         end
       end
-      File.open(filename, "w") do |file|
-        r.write(file)
+      if filename
+        File.open(filename, "w") do |file|
+          r.write(file)
+        end
       end
 
       if type == :weighted
-        File.open(weights_file, "w") do |file|
-          links.size.times do |i|
-            links[i].size.times do |j|
-              weight = BinData::FloatLe.new(:value => links[i][j].last)
-              weight.write(file)
-            end
+        weights_record = WeightsRecord.new(:nb_links => tot)
+        weight_index = 0
+        links.size.times do |i|
+          links[i].size.times do |j|
+            weights_record["weights"][weight_index] = links[i][j].last
+            weight_index += 1
           end
         end
+
+        if weights_file
+          File.open(weights_file, "w") do |file|
+            weights_record.write(file)
+          end
+        end
+
+        @weights_record = weights_record
       end
+      @record = r
     end
   end
 end
