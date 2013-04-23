@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+require 'pry'
+
+require 'thor'
+require File.dirname(__FILE__)+"/../lib/find_communities"
+
+class ConvertMain < Thor::Group
+
+  class_option :input, :aliases => "-i", :desc => "input file", :required => true
+  class_option :output, :aliases => "-o", :desc => "output file", :required => true
+  class_option :weights, :aliases => "-w", :desc => "read the graph as a weighted one and writes the weights in a separate file."
+
+  desc "read the graph and convert it to binary format."
+  def act
+    type = (options[:weights] ? :weighted : :unweighted)
+    g = FindCommunities::Graph.new(options[:input], type)
+    g.clean(type)
+    g.display_binary(options[:output], options[:weights], type)
+  end
+
+end
+
+ConvertMain.start

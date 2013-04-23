@@ -7,8 +7,8 @@ module FindCommunities
       if filename
         @record = BinaryGraphRecord.read(open(filename, "rb"))
         @nb_nodes = @record["nb_nodes"]
-        @degrees = @record["degrees"]
-        @links = @record["links"]
+        @degrees = @record["degrees"].to_a
+        @links = @record["links"].to_a
         @nb_links = @links.count
       else
         @nb_nodes = 0
@@ -18,7 +18,7 @@ module FindCommunities
       if filename && weights_file
         weights_record = WeightsRecord.new(:nb_links => nb_links)
                                       .read(open(weights_file, "rb"))
-        @weights = weights_record["weights"]
+        @weights = weights_record["weights"].to_a
       else
         @weights = []
       end

@@ -1,5 +1,4 @@
 require 'spec_helper'
-include FindCommunities
 
 describe Community do
   it "can be initialized from a filename" do

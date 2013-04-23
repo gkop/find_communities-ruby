@@ -67,7 +67,7 @@ describe "community (executable)" do
       relevant_lines[3].to_f.round(2).should == 0.41
     end
 
-    it "outputs level 2 in the hierarchy", :retry => 2 do
+    it "outputs level 2 in the hierarchy", :retry => 3 do
       run "community -l 2 #{filename} -w #{weights_file}"
       lines = out.split("\n")
       lines.length.should > 5
@@ -77,7 +77,7 @@ describe "community (executable)" do
       lines.last.to_f.round(2).should == 0.41
     end
 
-    it "outputs level 3 in the hierarchy", :retry => 2 do
+    it "outputs level 3 in the hierarchy", :retry => 3 do
       run "community #{filename} -l 3 -w #{weights_file}"
       lines = out.split("\n")
       lines.length.should == 5

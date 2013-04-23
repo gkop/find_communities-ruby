@@ -1,5 +1,4 @@
 require 'spec_helper'
-include FindCommunities
 
 describe BinaryGraph do
   it "can read a file" do
