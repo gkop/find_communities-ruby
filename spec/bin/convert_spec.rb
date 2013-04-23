@@ -8,8 +8,12 @@ describe "convert (executable)" do
   let(:control_file) { File.dirname(__FILE__) + "/../data/dense_weighted_graph.bin" }
   let(:control_weights_file) { File.dirname(__FILE__) + "/../data/dense_weighted_graph.weights" }
 
+  before do
+    Dir.mkdir(File.dirname(__FILE__) + "/../tmp")
+  end
+
   after do
-    FileUtils.rm_rf(File.dirname(__FILE__) + "/../tmp/.")
+    FileUtils.rm_r(File.dirname(__FILE__) + "/../tmp")
   end
 
   context "given a dense weighted graph", :retry => 2 do
