@@ -7,19 +7,25 @@ module FindCommunities
       @links = []
       @type = type
 
-      File.open(filename, "r") do |file|
-        file.each_line do |line|
-          pieces = line.split
-          src = pieces[0].to_i
-          dest = pieces[1].to_i
-          weight = pieces[2].to_f if type == :weighted
-          links[src] ||= []
-          links[src] << [dest, weight]
-          if src != dest
-            links[dest] ||= []
-            links[dest] << [src, weight]
+      if filename
+        File.open(filename, "r") do |file|
+          file.each_line do |line|
+            pieces = line.split
+            src = pieces[0].to_i
+            dest = pieces[1].to_i
+            weight = pieces[2].to_f if type == :weighted
+            add_link(src, dest, weight)
           end
         end
+      end
+    end
+
+    def add_link(src, dest, weight)
+      links[src] ||= []
+      links[src] << [dest, weight]
+      if src != dest
+        links[dest] ||= []
+        links[dest] << [src, weight]
       end
     end
 
