@@ -104,9 +104,12 @@ module FindCommunities
         end
       end
 
+      r = []
       size.times do |i|
         puts "#{i} #{renumber[n2c[i]]}"
+        r << renumber[n2c[i]]
       end
+      r
     end
 
     def partition2graph_binary

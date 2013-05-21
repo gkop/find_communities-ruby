@@ -12,7 +12,7 @@ describe Graph do
     control_bg = BinaryGraph.new(control_file, control_weights_file)
     new_bg.nb_nodes.should == control_bg.nb_nodes
     new_bg.nb_links.should == control_bg.nb_links
-    new_bg.degrees.should == control_bg.degrees
+    new_bg.degrees.should =~ control_bg.degrees
     new_bg.total_weight.should == control_bg.total_weight
     new_bg.links.should =~ control_bg.links
     new_bg.weights.should =~ control_bg.weights
