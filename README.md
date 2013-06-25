@@ -6,7 +6,7 @@ Ruby implementation of [Louvain community detection method](https://sites.google
 
 Add this line to your application's Gemfile:
 
-    gem 'find_communities-ruby'
+    gem 'find_communities'
 
 And then execute:
 
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install find_communities-ruby
+    $ gem install find_communities
 
 ## Usage
 
